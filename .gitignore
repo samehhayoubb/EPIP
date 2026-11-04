@@ -1,0 +1,8 @@
+.venv/         
+#Virtual Environment 
+.env           
+#environment Variables
+__pycache__/   
+#Compiled Python files
+.DS_Store      
+#macOS specific file
