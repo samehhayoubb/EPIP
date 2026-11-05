@@ -1,6 +1,6 @@
 # Engineering Project Intelligence Platform
 
-This folder contains documentation for the Engineering Project Intelligence
+This markdown contains documentation for the Engineering Project Intelligence
 Platform (EPIP), a multidisciplinary platform for engineering and construction
 project information and workflows.
 
