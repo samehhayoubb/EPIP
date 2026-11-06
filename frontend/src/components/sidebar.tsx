@@ -14,6 +14,11 @@ import {
   House,
 } from "lucide-react";
 
+import { useCurrentUser } from "@/components/current-user-provider";
+import { users } from "@/lib/mock-data";
+import { roleLabels } from "@/lib/access";
+
+
 const nav = [
   { href: "/", label: "Home", icon: House },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -27,6 +32,7 @@ const nav = [
 ];
 
 export function Sidebar() {
+  const { user, setUserId } = useCurrentUser();
   const pathname = usePathname();
 
   return (
@@ -54,6 +60,22 @@ export function Sidebar() {
           );
         })}
       </nav>
+      {process.env.NODE_ENV === "development" && (
+        <div className="mt-6 border-t px-2 pt-4">
+          <label className="text-xs text-muted-foreground">View as (dev only)</label>
+          <select
+            className="mt-1 w-full rounded-md border bg-background p-1 text-sm"
+            value={user.id}
+            onChange={(e) => setUserId(e.target.value)}
+          >
+            {users.map((u) => (
+              <option key={u.id} value={u.id}>
+                {u.name} ({roleLabels[u.role]})
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
     </aside>
   );
 }
