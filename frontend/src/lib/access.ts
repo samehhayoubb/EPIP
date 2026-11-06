@@ -1,5 +1,5 @@
-import { projects, members } from "./mock-data";
-import type { Project, Role, User } from "./types";
+import { projects, members, projectStats } from "./mock-data";
+import type { Project, Role, User, ProjectStats } from "./types";
 
 export const roleLabels: Record<Role, string> = {
   admin: "Admin",
@@ -28,4 +28,30 @@ export function getAccessibleProjects(user: User): Project[] {
       );
     }
   }
+}
+
+
+export function hasPortfolioView(user: User): boolean {
+  return (
+    user.role === "admin" ||
+    user.role === "ceo" ||
+    user.role === "projects_manager"
+  );
+}
+
+export function sumStats(list: Project[]): Omit<ProjectStats, "progress"> {
+  return list.reduce(
+    (total, p) => {
+      const s = projectStats[p.id];
+      return {
+        documents: total.documents + s.documents,
+        openRfis: total.openRfis + s.openRfis,
+        pendingReviews: total.pendingReviews + s.pendingReviews,
+        openFindings: total.openFindings + s.openFindings,
+        contractValue: total.contractValue + s.contractValue,
+        invoicedValue: total.invoicedValue + s.invoicedValue,
+      };
+    },
+    { documents: 0, openRfis: 0, pendingReviews: 0, openFindings: 0, contractValue: 0, invoicedValue: 0 }
+  );
 }

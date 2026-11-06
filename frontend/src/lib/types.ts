@@ -21,4 +21,14 @@ export type Project = {
   status: "active" | "on_hold" | "completed";
 };
 
+export type ProjectStats = {
+  documents: number;
+  openRfis: number;
+  pendingReviews: number;
+  openFindings: number; // open AI findings
+  contractValue: number; // EGP
+  invoicedValue: number; // EGP
+  progress: number; // 0 to 100
+};
+
 export type ProjectMember = { userId: string; projectId: string };

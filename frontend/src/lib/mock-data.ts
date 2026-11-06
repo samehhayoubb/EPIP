@@ -1,4 +1,4 @@
-import type { Organization, User, Project, ProjectMember } from "./types";
+import type { Organization, User, Project, ProjectMember,ProjectStats } from "./types";
 
 export const organizations: Organization[] = [
   { id: "GA", name: "Ghoneimi Architects" },
@@ -30,3 +30,13 @@ export const members: ProjectMember[] = [
   { userId: "u4", projectId: "p1" },
   { userId: "u5", projectId: "p1" },
 ];
+
+
+export const projectStats: Record<string, ProjectStats> = {
+  p1: { documents: 412, openRfis: 9, pendingReviews: 14, openFindings: 6, contractValue: 250_000_000, invoicedValue: 96_000_000, progress: 38 },
+  p2: { documents: 268, openRfis: 5, pendingReviews: 8, openFindings: 3, contractValue: 180_000_000, invoicedValue: 54_000_000, progress: 30 },
+  p3: { documents: 150, openRfis: 2, pendingReviews: 1, openFindings: 1, contractValue: 320_000_000, invoicedValue: 40_000_000, progress: 12 },
+  p4: { documents: 530, openRfis: 0, pendingReviews: 0, openFindings: 0, contractValue: 90_000_000, invoicedValue: 90_000_000, progress: 100 },
+  p5: { documents: 205, openRfis: 7, pendingReviews: 6, openFindings: 4, contractValue: 140_000_000, invoicedValue: 35_000_000, progress: 25 },
+  p6: { documents: 320, openRfis: 11, pendingReviews: 10, openFindings: 8, contractValue: 210_000_000, invoicedValue: 120_000_000, progress: 57 },
+};
