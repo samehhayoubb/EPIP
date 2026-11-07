@@ -1,8 +1,8 @@
-"use client";
+"use client";   // renders on client side, not server side
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"; // React hooks for state and side effects
 
-type Health = { status: string; service: string; version: string };
+type Health = { status: string; service: string; version: string }; // Type definition for the health check response
 
 const roadmap = [
   { name: "Project structure and Git", done: true },
@@ -12,15 +12,15 @@ const roadmap = [
   { name: "BOQ import and normalization", done: false },
 ];
 
-export default function Home() {
-  const [health, setHealth] = useState<Health | null>(null);
+export default function Home() {                                   // React component for the home page, its a function that returns JSX (Html like syntax).
+  const [health, setHealth] = useState<Health | null>(null);    //State is the data that rerenders page when it changes. useState is a React hook that returns a stateful value and a function to update it. Here, health is the stateful value and setHealth is the function to update it. The initial value of health is null.
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/health")
-      .then((res) => res.json())
-      .then(setHealth)
-      .catch(() => setError("Backend not reachable"));
+    fetch("http://localhost:8000/api/health")          //Function that returns a PROMISE that resolves to the response of the request to the specified URL.
+      .then((res) => res.json())                       // .then is when the return is successful. => res.json() parses the response body as JSON.
+      .then(setHealth)                                 // .then is when the return is successful. setHealth sets the health state to the parsed JSON response.
+      .catch(() => setError("Backend not reachable")); // .catch is when the return is unsuccessful. setError sets the error state to "Backend not reachable".
   }, []);
 
   return (
