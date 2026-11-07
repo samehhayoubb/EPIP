@@ -3,7 +3,8 @@ export type Role =
   | "ceo"
   | "projects_manager"
   | "project_manager"
-  | "engineer";
+  | "engineer"
+  | "document_control";
 
 export type Organization = { id: string; name: string };
 

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ArrowUp, MessageCircle, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useCurrentUser } from "@/components/current-user-provider";
 import {
   MessageScrollerProvider,
   MessageScroller,
@@ -27,6 +28,7 @@ type ChatMessage = {
 };
 
 export function ChatWindow() {
+  const { user } = useCurrentUser();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
 
@@ -78,7 +80,8 @@ export function ChatWindow() {
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
               <MessageCircle className="h-5 w-5 text-muted-foreground" />
             </div>
-            <h2 className="font-semibold">What would you like to know?</h2>
+            <h2 className="font-semibold">Good morning, {user.name}!</h2>
+            <h2 className="font-semibold">How can I help you today?</h2>
             <p className="max-w-xs text-sm text-muted-foreground">
               Ask about your project documents, BOQs, or specifications.
             </p>
