@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import (
     BigInteger,
     DateTime,
@@ -31,6 +31,9 @@ class Document(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
+    revisions: Mapped[list["DocumentRevision"]] = relationship(
+        back_populates="document", order_by="DocumentRevision.uploaded_at"
+    )
 
 
 class DocumentRevision(Base):
@@ -55,3 +58,4 @@ class DocumentRevision(Base):
     uploaded_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
+    document: Mapped["Document"] = relationship(back_populates="revisions")

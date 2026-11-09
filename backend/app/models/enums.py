@@ -21,3 +21,25 @@ class ExtractionStatus(str, Enum):
     EXTRACTED = "extracted"
     NEEDS_OCR = "needs_ocr"
     FAILED = "failed"
+
+
+class DocType(str, Enum):
+    MIR = "mir"
+    IR = "ir"
+    RFI = "rfi"
+    SUBMITTAL = "submittal"
+    SHOP_DRAWING = "shop_drawing"
+    DRAWING = "drawing"
+    SPECIFICATION = "specification"
+    BOQ = "boq"
+    INVOICE = "invoice"
+    CORRESPONDENCE = "correspondence"
+    REPORT = "report"
+    OTHER = "other"
+
+
+class Discipline(str, Enum):
+    ARCHITECTURE = "architecture"
+    ELECTRICAL = "electrical"
+    MECHANICAL = "mechanical"
+    GENERAL = "general"
