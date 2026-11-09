@@ -8,8 +8,10 @@ import {
   getSortedRowModel,
   useReactTable,
   type ColumnDef,
+  type ColumnFiltersState,
   type SortingState,
 } from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -19,6 +21,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ColumnFilter } from "./column-filter";
+import "./column-meta";
 
 type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
@@ -34,29 +38,60 @@ export function DataTable<TData, TValue>({
   emptyMessage = "No results.",
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [filter, setFilter] = useState("");
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const table = useReactTable({
     data,
     columns,
-    state: { sorting, globalFilter: filter },
+    state: { sorting, globalFilter, columnFilters },
     onSortingChange: setSorting,
-    onGlobalFilterChange: setFilter,
+    onGlobalFilterChange: setGlobalFilter,
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
 
   const rows = table.getRowModel().rows;
+  // Columns that declared a filter in their `meta`
+  const filterableColumns = table
+    .getAllLeafColumns()
+    .filter((column) => column.columnDef.meta?.filter);
+  const hasActiveFilters = globalFilter !== "" || columnFilters.length > 0;
+
+  function clearFilters() {
+    setGlobalFilter("");
+    setColumnFilters([]);
+  }
 
   return (
     <div className="space-y-3">
-      <Input
-        placeholder={searchPlaceholder}
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
-        className="max-w-sm"
-      />
+      <div className="flex flex-wrap items-end gap-4">
+        <div>
+          <label className="text-xs text-muted-foreground">Search</label>
+          <Input
+            placeholder={searchPlaceholder}
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            className="mt-1 w-64"
+          />
+        </div>
+
+        {filterableColumns.map((column) => (
+          <ColumnFilter key={column.id} column={column} />
+        ))}
+
+        {hasActiveFilters && (
+          <Button variant="ghost" onClick={clearFilters}>
+            Clear filters
+          </Button>
+        )}
+      </div>
+
+      <p className="text-xs text-muted-foreground">
+        Showing {rows.length} of {data.length}
+      </p>
 
       <div className="rounded-lg border">
         <Table>

@@ -15,6 +15,11 @@ import { Label } from "@/components/ui/label";
 import { NativeSelect } from "@/components/native-select";
 import { ApiError } from "@/lib/api-client";
 import { DISCIPLINES, DOC_TYPES } from "./constants";
+import {
+  parseFileName,
+  suggestTitle,
+  type ParsedFileName,
+} from "./filename-parser";
 import { useUploadDocument } from "./hooks";
 
 const FILE_ACCEPT =
@@ -30,8 +35,9 @@ export function UploadDialog({ projectId, open, onOpenChange }: UploadDialogProp
   const upload = useUploadDocument(projectId);
 
   const [file, setFile] = useState<File | null>(null);
-  const [title, setTitle] = useState("");
-  const [docType, setDocType] = useState("mir");
+  const [detected, setDetected] = useState<ParsedFileName | null>(null);
+  const [titleOverride, setTitleOverride] = useState<string | null>(null);
+  const [docType, setDocType] = useState("");
   const [discipline, setDiscipline] = useState("");
   const [docNumber, setDocNumber] = useState("");
   const [revision, setRevision] = useState("A");
@@ -39,10 +45,25 @@ export function UploadDialog({ projectId, open, onOpenChange }: UploadDialogProp
   const [duplicate, setDuplicate] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Derived, not stored: follows the form until the user types their own title
+  const fileBase = file ? file.name.replace(/\.[^.]+$/, "") : "";
+  const suggested = suggestTitle({
+    projectCode: detected?.projectCode,
+    disciplineCode: detected?.disciplineCode,
+    typeCode: detected?.typeCode,
+    docNumberWidth: detected?.docNumberWidth,
+    docType,
+    discipline,
+    docNumber,
+    fileBase,
+  });
+  const title = titleOverride ?? suggested;
+
   function reset() {
     setFile(null);
-    setTitle("");
-    setDocType("mir");
+    setDetected(null);
+    setTitleOverride(null);
+    setDocType("");
     setDiscipline("");
     setDocNumber("");
     setRevision("A");
@@ -61,10 +82,21 @@ export function UploadDialog({ projectId, open, onOpenChange }: UploadDialogProp
     setError(null);
     setDuplicate(false);
     setForce(false);
-    // Suggest a title from the file name if the title is still empty
-    if (selected && !title) {
-      setTitle(selected.name.replace(/\.[^.]+$/, ""));
+    setTitleOverride(null);
+
+    if (!selected) {
+      setDetected(null);
+      setDocNumber("");
+      setDocType("");
+      setDiscipline("");
+      return;
     }
+
+    const parsed = parseFileName(selected.name);
+    setDetected(parsed);
+    setDocNumber(parsed?.docNumber ?? "");
+    setDocType(parsed?.docType ?? "");
+    setDiscipline(parsed?.discipline ?? "");
   }
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -76,10 +108,10 @@ export function UploadDialog({ projectId, open, onOpenChange }: UploadDialogProp
 
     const body = new FormData();
     body.append("file", file);
-    body.append("title", title);
+    body.append("title", title.trim());
     body.append("doc_type", docType);
     if (discipline) body.append("discipline", discipline);
-    if (docNumber) body.append("doc_number", docNumber);
+    if (docNumber.trim()) body.append("doc_number", docNumber.trim());
     body.append("revision_label", revision);
     body.append("force", String(force));
 
@@ -112,17 +144,20 @@ export function UploadDialog({ projectId, open, onOpenChange }: UploadDialogProp
               accept={FILE_ACCEPT}
               onChange={(e) => handleFileChange(e.target.files?.[0] ?? null)}
             />
-          </div>
-
-          <div className="space-y-1">
-            <Label htmlFor="title">Title</Label>
-            <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              maxLength={300}
-              required
-            />
+            {file && detected && (
+              <p className="text-xs text-muted-foreground">
+                Filled in from the file name (project code {detected.projectCode}
+                ). Please check the details.
+                {(!detected.docType || !detected.discipline) &&
+                  " Some codes were not recognised, so choose those manually."}
+              </p>
+            )}
+            {file && !detected && (
+              <p className="text-xs text-muted-foreground">
+                The file name doesn&apos;t follow PROJECT-DISCIPLINE-TYPE-NUMBER,
+                so fill in the details below.
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -132,7 +167,11 @@ export function UploadDialog({ projectId, open, onOpenChange }: UploadDialogProp
                 id="doc-type"
                 value={docType}
                 onChange={(e) => setDocType(e.target.value)}
+                required
               >
+                <option value="" disabled>
+                  Select type...
+                </option>
                 {DOC_TYPES.map((t) => (
                   <option key={t.value} value={t.value}>
                     {t.label}
@@ -177,6 +216,28 @@ export function UploadDialog({ projectId, open, onOpenChange }: UploadDialogProp
                 required
               />
             </div>
+          </div>
+
+          <div className="space-y-1">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="title">Title</Label>
+              {titleOverride !== null && titleOverride !== suggested && (
+                <button
+                  type="button"
+                  className="text-xs text-muted-foreground underline"
+                  onClick={() => setTitleOverride(null)}
+                >
+                  Use suggested title
+                </button>
+              )}
+            </div>
+            <Input
+              id="title"
+              value={title}
+              onChange={(e) => setTitleOverride(e.target.value)}
+              maxLength={300}
+              required
+            />
           </div>
 
           {error && <p className="text-sm text-destructive">{error}</p>}
