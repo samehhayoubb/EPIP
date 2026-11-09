@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@tanstack/react-query": "^5.107.1",
+    "@tanstack/react-table": "^9.3.1"
+  }
+}
