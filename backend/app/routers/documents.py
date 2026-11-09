@@ -61,9 +61,13 @@ def upload_document(
                 )
             )
             if duplicate:
+                existing = db.get(Document, duplicate.document_id)
                 raise HTTPException(
                     status_code=409,
-                    detail=f"This exact file is already uploaded as document {duplicate.document_id}",
+                    detail=(
+                        f'This exact file is already uploaded as "{existing.title}" '
+                        f"(revision {duplicate.revision_label})."
+                    ),
                 )
 
         document = Document(

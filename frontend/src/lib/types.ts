@@ -11,6 +11,7 @@ export type Organization = { id: string; name: string };
 export type User = {
   id: string;
   name: string;
+  email: string;
   role: Role;
   organizationId: string | null; // null for the platform admin
 };
