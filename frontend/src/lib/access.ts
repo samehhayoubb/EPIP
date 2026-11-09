@@ -7,6 +7,7 @@ export const roleLabels: Record<Role, string> = {
   projects_manager: "Projects Manager",
   project_manager: "Project Manager",
   engineer: "Engineer",
+  document_control: "Document Control",
 };
 
 export function getAccessibleProjects(user: User): Project[] {
@@ -19,7 +20,8 @@ export function getAccessibleProjects(user: User): Project[] {
       return projects.filter((p) => p.organizationId === user.organizationId);
 
     case "project_manager":
-    case "engineer": {
+    case "engineer":
+    case "document_control": {
       const assigned = new Set(
         members.filter((m) => m.userId === user.id).map((m) => m.projectId)
       );

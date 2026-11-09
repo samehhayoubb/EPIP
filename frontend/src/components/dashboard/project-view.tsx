@@ -22,7 +22,7 @@ export function ProjectView({ projects }: { projects: Project[] }) {
   }
 
   const stats = projectStats[selected.id];
-  const showCommercial = user.role !== "engineer";
+  const showCommercial =   user.role !== "engineer" && user.role !== "document_control";
 
   return (
     <div className="space-y-6">

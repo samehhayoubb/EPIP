@@ -1,4 +1,4 @@
-import type { Organization, User, Project, ProjectMember,ProjectStats } from "./types";
+import type { Organization, User, Project, ProjectMember, ProjectStats } from "./types";
 
 export const organizations: Organization[] = [
   { id: "GA", name: "Ghoneimi Architects" },
@@ -6,15 +6,16 @@ export const organizations: Organization[] = [
 ];
 
 export const users: User[] = [
-  { id: "u1", name: "Sameh", role: "admin", organizationId: null },
-  { id: "u2", name: "Omar Ghoneimi", role: "ceo", organizationId: "GA" },
-  { id: "u3", name: "Saad", role: "projects_manager", organizationId: "GA" },
-  { id: "u4", name: "Atef", role: "project_manager", organizationId: "GA" },
-  { id: "u5", name: "Shaimaa", role: "engineer", organizationId: "GA" },
-  { id: "u6", name: "Random CEO", role: "ceo", organizationId: "SEC" },
-  { id: "u7", name: "Random Projects Manager", role: "projects_manager", organizationId: "SEC" },
-  { id: "u8", name: "Random Project Manager", role: "project_manager", organizationId: "SEC" },
-  { id: "u9", name: "Random Engineer", role: "engineer", organizationId: "SEC" },
+  { id: "u1", name: "Sameh", email: "sameh@example.com", role: "admin", organizationId: null },
+  { id: "u2", name: "Omar Ghoneimi", email: "omar.ghoneimi@example.com", role: "ceo", organizationId: "GA" },
+  { id: "u3", name: "Saad", email: "saad@example.com", role: "projects_manager", organizationId: "GA" },
+  { id: "u4", name: "Atef", email: "atef@example.com", role: "project_manager", organizationId: "GA" },
+  { id: "u5", name: "Shaimaa", email: "shaimaa@example.com", role: "engineer", organizationId: "GA" },
+  { id: "u10", name: "GA Document Control", email: "ga.doccontrol@example.com", role: "document_control", organizationId: "GA" },
+  { id: "u6", name: "Random CEO", email: "sec.ceo@example.com", role: "ceo", organizationId: "SEC" },
+  { id: "u7", name: "Random Projects Manager", email: "sec.projects.manager@example.com", role: "projects_manager", organizationId: "SEC" },
+  { id: "u8", name: "Random Project Manager", email: "sec.project.manager@example.com", role: "project_manager", organizationId: "SEC" },
+  { id: "u9", name: "Random Engineer", email: "sec.engineer@example.com", role: "engineer", organizationId: "SEC" },
 ];
 
 export const projects: Project[] = [
@@ -28,7 +29,12 @@ export const projects: Project[] = [
 
 export const members: ProjectMember[] = [
   { userId: "u4", projectId: "p1" },
+  { userId: "u4", projectId: "p4" },
   { userId: "u5", projectId: "p1" },
+  { userId: "u10", projectId: "p1" },
+  { userId: "u10", projectId: "p4" },
+  { userId: "u8", projectId: "p6" },
+  { userId: "u9", projectId: "p6" },
 ];
 
 
