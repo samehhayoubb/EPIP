@@ -6,3 +6,7 @@ __pycache__/
 #Compiled Python files
 .DS_Store      
 #macOS specific file
+backend/storage/
+#Storage for uploaded files
+backend/tests/api_smoke_results.md
+#Test results for API smoke tests
